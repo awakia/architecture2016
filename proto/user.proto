@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package rpc;
+
+import "google/api/annotations.proto";
+
+message User {
+  int32 id = 1;
+  string account = 2;
+  string name = 3;
+}
+
+message UserParam {
+  int32 id = 1;
+}
+
+message Empty {}
+
+service UserService {
+  rpc List(Empty) returns (User) {
+    option (google.api.http) = {
+      get: "/users"
+    };
+  }
+
+  rpc Get(UserParam) returns (stream User) {
+    option (google.api.http) = {
+      get: "/users/{id}"
+    };
+  }
+}
