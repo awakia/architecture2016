@@ -31,3 +31,88 @@
 * Label name color
 * Labeling issue:references label:references user_id:integer
 * Event action param type  # Issueから参照やラベルやAssigneeの追加や削除を担う
+
+## Protocol Buffersの定義
+
+### 準備
+
+gRPCでrpc定義をすることを考えると、うまくREST形式とRPC形式を融合しないといけない。
+ここでなんとなくのルールを作っておく。通常RPCでは
+
+cf. https://talks.golang.org/2015/gotham-grpc.slide#1
+
+```
+service Google {
+  rpc Search(Request) returns (Result)
+}
+
+message Request {
+  string query = 1;
+}
+
+message Result {
+  string title = 1;
+  string url = 2;
+  string snippet = 3;
+}
+```
+
+```
+message HelloRequest {
+  string greeting = 1;
+}
+
+message HelloResponse {
+  string reply = 1;
+}
+
+service HelloService {
+  rpc SayHello(HelloRequest) returns
+  (HelloResponse);
+}
+```
+
+と言った形で、RequestとResultのペアをそれぞれrpcごとに定義していく形になる。
+
+ここでResultはUserやLabelなどのモデルそのもので良い。Requestだけ考えてあげて
+
+```
+service UserService {
+  rpc List() returns (stream User)  // index
+  rpc Get(UserID) returns (User) // show
+  rpc GetByName(UserName) returns (User)
+}
+
+message UserID {
+  int32 id = 1;
+}
+
+message UserName {
+  string name = 1;
+}
+```
+
+か
+
+```
+service UserService {
+  rpc List() returns (stream User)  // index
+  rpc Get(UserParam) returns (User) // show
+}
+
+message UserParam {
+  int32 id = 1;
+  string name = 2;
+}
+```
+
+のどちらかを使うようにする。
+ポイントは
+
+- index => list
+- show => get
+- new, edit, create, update, delete => そのまま
+
+の命名規則を使うこと。
+
+後者のほうが後々よいかも？？
