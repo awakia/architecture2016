@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -13,6 +14,7 @@ import (
 
 var (
 	endpoint = flag.String("endpoint", "localhost:9090", "endpoint of the service")
+	port     = flag.Int("port", 8080, "The reverse proxy port")
 )
 
 func run() error {
@@ -26,7 +28,8 @@ func run() error {
 		return err
 	}
 
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe(fmt.Sprintf(":%d", *port), mux)
+	glog.Info("server running on port:%d", *port)
 	return nil
 }
 
