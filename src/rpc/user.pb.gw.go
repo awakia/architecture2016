@@ -29,13 +29,13 @@ var _ = runtime.String
 var _ = json.Marshal
 var _ = utilities.PascalFromSnake
 
-func request_UserService_List_0(ctx context.Context, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_UserService_List_0(ctx context.Context, client UserServiceClient, req *http.Request, pathParams map[string]string) (UserService_ListClient, error) {
 	var protoReq Empty
 
 	return client.List(ctx, &protoReq)
 }
 
-func request_UserService_Get_0(ctx context.Context, client UserServiceClient, req *http.Request, pathParams map[string]string) (UserService_GetClient, error) {
+func request_UserService_Get_0(ctx context.Context, client UserServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq UserParam
 
 	var (
@@ -96,7 +96,7 @@ func RegisterUserServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			return
 		}
 
-		forward_UserService_List_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserService_List_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -107,7 +107,7 @@ func RegisterUserServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			return
 		}
 
-		forward_UserService_Get_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_UserService_Get_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -121,7 +121,7 @@ var (
 )
 
 var (
-	forward_UserService_List_0 = runtime.ForwardResponseMessage
+	forward_UserService_List_0 = runtime.ForwardResponseStream
 
-	forward_UserService_Get_0 = runtime.ForwardResponseStream
+	forward_UserService_Get_0 = runtime.ForwardResponseMessage
 )

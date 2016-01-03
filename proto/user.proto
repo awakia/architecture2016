@@ -17,13 +17,13 @@ message UserParam {
 message Empty {}
 
 service UserService {
-  rpc List(Empty) returns (User) {
+  rpc List(Empty) returns (stream User) {
     option (google.api.http) = {
       get: "/users"
     };
   }
 
-  rpc Get(UserParam) returns (stream User) {
+  rpc Get(UserParam) returns (User) {
     option (google.api.http) = {
       get: "/users/{id}"
     };
